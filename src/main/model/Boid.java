@@ -2,18 +2,20 @@ package main.model;
 
 import java.util.List;
 
+import main.behavior.BehaviorStrategy;
+import main.behavior.CrashAvoidanceBehavior;
 import main.behavior.FlockBehavior;
 import main.simulation.Forces;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
-
 public class Boid {
     private double x, y;
     private double vx, vy;
     private final int id;
-    private final BoidType type;
+    private BoidType type;
+    private BehaviorStrategy behavior = new CrashAvoidanceBehavior();
     private static final double MAX_SPEED = 2.0;
     private static final double MAX_FORCE = 0.03;
     private static final int BOID_SIZE = 8;
@@ -31,17 +33,18 @@ public class Boid {
         this.vy = (Math.random() - 0.5) * 2;
     }
 
-        public void update(List<Boid> neighbors, int width, int height) {
-        FlockBehavior flockBehavior = new FlockBehavior();
-        Forces forces = flockBehavior.calculateForces(this, neighbors);
+    public void update(List<Boid> neighbors, int width, int height) {
+        Forces forces = behavior.calculateForces(this, neighbors);
 
         vx += forces.separation().x() + forces.alignment().x() + forces.cohesion().x();
         vy += forces.separation().y() + forces.alignment().y() + forces.cohesion().y();
 
         limitVelocity();
 
-        x += vx;
-        y += vy;
+        if (this.type != BoidType.CRASHED) {
+            x += vx;
+            y += vy;
+        }
 
         wrapAround(width, height);
     }
@@ -103,6 +106,10 @@ public class Boid {
 
     public BoidType getType() {
         return type;
+    }
+
+    public void setType(BoidType type) {
+        this.type = type;
     }
 
 }
