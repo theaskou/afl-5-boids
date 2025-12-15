@@ -15,7 +15,7 @@ public class Boid {
     private double vx, vy;
     private final int id;
     private BoidType type;
-    private BehaviorStrategy behavior = new CrashAvoidanceBehavior();
+    private BehaviorStrategy behavior = new FlockBehavior(); // Sæt hvilken behavior man vil simulere her
     private static final double MAX_SPEED = 2.0;
     private static final double MAX_FORCE = 0.03;
     private static final int BOID_SIZE = 8;
